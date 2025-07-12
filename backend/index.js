@@ -8,15 +8,29 @@ const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
-app.use(cors());
+
+// Use your Vercel frontend domain here:
+const FRONTEND_ORIGIN = "https://liveeditor-kappa.vercel.app";
+
+// Enable CORS
+app.use(cors({
+  origin: FRONTEND_ORIGIN,
+  credentials: true,
+}));
 
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: FRONTEND_ORIGIN,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 });
 
 let code = "";
 
 io.on("connection", (socket) => {
+  console.log("✅ New client connected");
+
   socket.emit("code-sync", code);
 
   socket.on("code-change", (newCode) => {
@@ -62,8 +76,15 @@ io.on("connection", (socket) => {
       } catch (_) {}
     });
   });
+
+  socket.on("disconnect", () => {
+    console.log("❌ Client disconnected");
+  });
 });
 
-server.listen(5000, () => {
-  console.log("🚀 Server running on http://localhost:5000");
+// Use dynamic PORT for deployment
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
