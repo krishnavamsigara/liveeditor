@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://5cb251d3-59e7-4e73-9fc9-a492d0e98260-00-2wvh8f09k83bk.sisko.replit.dev/");
 
 export default function App() {
   const [code, setCode] = useState("// Write JavaScript code here...");
